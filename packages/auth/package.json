@@ -11,7 +11,9 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "better-auth": "catalog:"
+    "@better-auth/stripe": "catalog:",
+    "better-auth": "catalog:",
+    "stripe": "catalog:"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

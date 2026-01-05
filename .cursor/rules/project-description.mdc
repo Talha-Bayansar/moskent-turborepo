@@ -1,0 +1,120 @@
+---
+alwaysApply: true
+---
+
+📘 Moskent — Updated Project Description (Core Dashboard + Activity Manager PWA + Monorepo Architecture)
+Moskent is a modular, multi‑tenant mosque‑management ecosystem built as a monorepo containing multiple applications and shared packages.
+The platform uses:
+
+- TanStack Start for routing, server functions, and SSR
+- TanStack Query for client caching and data synchronization
+- Better Auth for authentication, organizations, teams, and RBAC
+- Neon Postgres + Drizzle ORM for database and migrations
+- shadcn/ui (Base UI) for a shared design system
+- Intlayer for localization
+- TypeScript in strict mode
+  Moskent is designed as a multi‑app ecosystem, where each app focuses on a specific workflow while sharing the same backend logic, database, authentication, and UI components.
+
+🌐 Moskent Ecosystem Architecture
+
+1. Moskent Core — General Admin Dashboard (Desktop‑First)
+   The Core application is a comprehensive, desktop‑first dashboard used by mosque administrators and staff.
+   It provides a centralized interface to manage all operational aspects of the mosque.
+   The Core app handles:
+
+- Contacts management
+- Organization management (Stripe subscriptions)
+- Teams management
+- Password vault
+- Key manager
+- Group management
+- Activity management
+- Attendance analytics
+- Dashboards & reporting
+- Notes management
+- Deep configuration & permissions
+- Multi‑tenant administration
+  This is the central control panel of the entire Moskent ecosystem.
+
+2. Activity Manager — Mobile‑First PWA
+   The Activity Manager is a standalone, mobile‑first PWA designed for fast, on‑the‑go workflows.
+   It focuses on the daily operational needs of teachers, volunteers, and youth leaders.
+   It provides:
+
+- Creating new activities
+- Editing activity details
+- Starting and ending activity sessions
+- Attendance management per activity
+- A streamlined mobile UX optimized for touch
+- A lightweight, fast interface for real‑world usage
+  This app delivers a superior mobile experience compared to the Core dashboard for activity‑related tasks.
+
+📦 Monorepo Structure
+Moskent uses a monorepo to ensure consistency, shared logic, and scalable development.
+apps/
+core/ # General admin dashboard
+activity-manager/ # Mobile-first PWA for activities
+
+packages/
+db/ # Drizzle ORM schemas, migrations, and database client
+auth/ # Better Auth configuration, helpers, RBAC
+ui/ # Shared Base UI–powered shadcn components
+modules/ # Shared business logic (future)
+config/ # Shared constants and environment schemas (future)
+
+
+All apps share:
+
+- The same database schema
+- The same authentication system
+- The same UI components
+- The same business logic
+- The same permissions model
+  This ensures consistency across the entire ecosystem.
+
+🧠 Core Principles
+Feature‑First Modular Architecture
+All business logic lives in shared packages, ensuring every app uses the same source of truth.
+Multi‑Tenant by Design
+Every query, mutation, and service is scoped to the current organization and team.
+Shared Backend Layer
+Apps share:
+
+- Drizzle schemas
+- Server functions
+- Permissions
+- Validation schemas
+- Query keys
+- Business logic
+  Shared UI System
+- All UI components live in /packages/ui
+- Built with Base UI–powered shadcn
+- Render‑prop pattern instead of asChild
+- Consistent design across all apps
+  Localization Everywhere
+- All strings localized via Intlayer
+- Shared dictionaries in a central package
+
+📈 Future‑Ready Expansion
+The architecture supports adding new apps without modifying existing ones, such as:
+
+- Attendance Tracker PWA
+- Contacts PWA
+- Key & Password Access PWA
+- Donations & fundraising app
+- Volunteer scheduling app
+- Parent portal
+- Student portal
+- Teacher portal
+- Room reservation app
+- Inventory management app
+- Messaging & notifications app
+
+If you want, I can also update:
+
+- Your coding rules context
+- Your Cursor AI project context
+- A shared modules package structure
+- A UI package readme
+- A folder structure diagram
+  Just tell me what you want to refine next.

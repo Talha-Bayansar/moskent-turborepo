@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+---
+
+📘 Cursor AI — Custom Coding Rules & Overrides Context
+Use the following rules as authoritative overrides when generating code for this project.
+These rules correct outdated model assumptions and enforce project‑specific conventions.
+
+1. Shadcn (Base UI) Component Rules
+   Shadcn in this project is based on Base UI, not Radix UI.
+   Therefore:
+   ❌ Do NOT use asChild props
+   This is invalid:
+   <Component asChild>
+   <ChildComponent />
+   </Component>
+
+✅ Instead, use the render prop
+Correct usage:
+<Component render={<ChildComponent />} />
+
+This applies to all shadcn components that previously used asChild in Radix‑based versions.
+
+2. Component Composition Rules
+
+- Prefer render props over asChild or slot patterns.
+- Avoid passing JSX children when the component expects a render prop.
+- Always check the component’s local wrapper in src/core/ui/ for the correct API.
+
+3. TanStack Query Rules
+
+- All queries must use module‑scoped query keys from hooks/keys.ts.
+- Never hardcode query keys inline.
+- Mutations must invalidate only the relevant module keys.
+- Use prefetchQuery in loaders for SSR.
+- Use dehydrate + hydration provider for client hydration.
+
+4. TanStack Start Rules
+
+- All routes must live under src/routes/.
+- Providers must live under src/providers/.
+- Server functions (loaders/actions) must not contain UI logic.
+- Client components must not import server‑only modules.
+
+5. Directives rules
+
+- This is a tanstack start project so we don't use Next.js like directives like "use client" or "use server"

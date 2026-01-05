@@ -5,6 +5,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "dev:web": "turbo run dev --filter=@repo/web",
+    "dev:core": "turbo run dev --filter=@repo/moskent-core",
     "lint": "turbo run lint",
     "format": "prettier --write .",
     "check-types": "turbo run check-types",
@@ -15,6 +16,7 @@
     "db": "pnpm --filter=@repo/db run db",
     "ui": "pnpm --filter=@repo/ui run ui",
     "ui:web": "pnpm --filter=@repo/web run ui",
+    "ui:core": "pnpm --filter=@repo/moskent-core run ui",
     "auth:secret": "pnpm dlx @better-auth/cli@latest secret",
     "auth:generate": "pnpm dlx @better-auth/cli@latest generate --config ./packages/auth/src/auth.ts --y --output ./packages/db/src/schema/auth.schema.ts && prettier --write ./packages/db/src/schema/auth.schema.ts"
   },

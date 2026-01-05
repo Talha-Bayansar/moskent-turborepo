@@ -1,0 +1,327 @@
+---
+alwaysApply: true
+---
+
+📘 Moskent — Feature-Sliced Design (FSD) Folder Structure Rules
+
+This project follows Feature-Sliced Design methodology adapted for TanStack Start monorepo architecture. All folder structures must adhere to these rules.
+
+🏗️ Monorepo Architecture Overview
+
+The project is organized as a monorepo with clear separation between applications and shared packages:
+
+```
+moskent-turborepo/
+├── apps/                          # Application layer (FSD: app)
+│   ├── moskent-core/              # Desktop-first admin dashboard
+│   └── activity-manager/          # Mobile-first PWA
+│
+└── packages/                      # Shared infrastructure (FSD: shared)
+    ├── auth/                      # Authentication & authorization
+    ├── db/                        # Database schemas & client
+    ├── ui/                        # Shared UI components
+    └── modules/                   # Shared business logic (future)
+```
+
+📁 Application-Level Structure (apps/*/src/)
+
+Each application follows FSD layers adapted for TanStack Start:
+
+```
+apps/{app-name}/src/
+├── routes/                        # FSD: pages layer (TanStack Router file-based)
+│   ├── __root.tsx                 # Root route layout
+│   ├── index.tsx                  # Landing/home page
+│   ├── (auth-pages)/              # Route group for auth pages
+│   │   ├── route.tsx              # Layout route
+│   │   ├── login.tsx              # Login page
+│   │   └── signup.tsx              # Signup page
+│   ├── (authenticated)/           # Route group for protected pages
+│   │   ├── route.tsx              # Auth guard layout
+│   │   ├── dashboard/             # Dashboard feature page
+│   │   │   ├── route.tsx          # Route config
+│   │   │   └── index.tsx          # Page component
+│   │   ├── contacts/              # Contacts feature page
+│   │   │   ├── route.tsx
+│   │   │   ├── index.tsx          # List view
+│   │   │   └── $id.tsx            # Detail view
+│   │   ├── activities/            # Activities feature page
+│   │   └── [other-features]/      # Other feature pages
+│   └── api/                       # API routes (server functions)
+│       └── {feature}/              # Feature-scoped API routes
+│           └── $.ts               # Server function handlers
+│
+├── features/                      # FSD: features layer
+│   ├── auth/                      # Authentication feature
+│   │   ├── ui/                    # Feature-specific UI components
+│   │   │   ├── sign-in-form.tsx
+│   │   │   └── sign-out-button.tsx
+│   │   ├── model/                 # Feature business logic
+│   │   │   ├── hooks.ts           # React hooks
+│   │   │   ├── queries.ts         # TanStack Query hooks
+│   │   │   └── mutations.ts       # TanStack Query mutations
+│   │   └── api/                   # Feature server functions
+│   │       └── functions.ts       # createServerFn exports
+│   │
+│   ├── contacts/                  # Contacts management feature
+│   │   ├── ui/
+│   │   │   ├── contact-list.tsx
+│   │   │   ├── contact-form.tsx
+│   │   │   └── contact-card.tsx
+│   │   ├── model/
+│   │   │   ├── hooks.ts
+│   │   │   ├── queries.ts
+│   │   │   ├── mutations.ts
+│   │   │   └── types.ts
+│   │   └── api/
+│   │       └── functions.ts
+│   │
+│   ├── activities/                # Activities feature
+│   ├── attendance/                # Attendance feature
+│   ├── organizations/             # Organization management
+│   ├── teams/                     # Teams management
+│   └── [other-features]/          # Additional features
+│
+├── entities/                      # FSD: entities layer
+│   ├── contact/                   # Contact entity
+│   │   ├── ui/                    # Entity UI components
+│   │   │   └── contact-avatar.tsx
+│   │   ├── model/                 # Entity business logic
+│   │   │   ├── types.ts
+│   │   │   └── utils.ts
+│   │   └── api/                   # Entity server functions
+│   │       └── functions.ts
+│   │
+│   ├── activity/                  # Activity entity
+│   ├── organization/              # Organization entity
+│   ├── team/                      # Team entity
+│   └── [other-entities]/          # Additional entities
+│
+├── widgets/                       # FSD: widgets layer (optional, for complex compositions)
+│   ├── dashboard-stats/           # Dashboard statistics widget
+│   │   ├── ui/
+│   │   │   └── dashboard-stats.tsx
+│   │   └── model/
+│   │       └── hooks.ts
+│   │
+│   └── [other-widgets]/
+│
+├── shared/                        # FSD: shared layer (app-specific)
+│   ├── ui/                        # App-specific UI components
+│   │   ├── default-catch-boundary.tsx
+│   │   ├── default-not-found.tsx
+│   │   └── theme-toggle.tsx
+│   ├── lib/                       # App-specific utilities
+│   │   └── utils.ts
+│   └── config/                    # App-specific configuration
+│
+├── components/                    # Legacy/global components (prefer shared/ui)
+│   └── [migrate to shared/ui]/
+│
+├── router.tsx                     # TanStack Router configuration
+└── styles.css                     # Global styles
+```
+
+📦 Shared Packages Structure (packages/*)
+
+Shared packages represent cross-cutting concerns and business logic:
+
+```
+packages/
+├── auth/                          # Authentication package
+│   └── src/
+│       ├── auth.ts                # Better Auth configuration
+│       ├── auth-client.ts         # Client-side auth
+│       └── tanstack/              # TanStack integration
+│           ├── queries.ts         # Query options
+│           ├── functions.ts       # Server functions
+│           └── middleware.ts      # Route middleware
+│
+├── db/                            # Database package
+│   └── src/
+│       ├── index.ts               # Database client export
+│       └── schema/                # Drizzle schemas
+│           ├── index.ts
+│           ├── auth.schema.ts
+│           ├── contacts.schema.ts
+│           ├── activities.schema.ts
+│           └── [other-schemas].ts
+│
+├── ui/                            # Shared UI components package
+│   └── [components, hooks, lib]   # Base UI shadcn components
+│
+└── modules/                       # Shared business logic (future)
+    └── {feature-module}/          # Feature-scoped modules
+        ├── queries/               # Shared query hooks
+        ├── mutations/             # Shared mutation hooks
+        ├── server/                # Shared server functions
+        ├── types/                 # Shared TypeScript types
+        └── validation/            # Shared validation schemas
+```
+
+🎯 FSD Layer Rules & Import Hierarchy
+
+1. **Import Direction (Dependency Flow)**
+   - `routes` (pages) → `features` → `entities` → `shared` → `packages`
+   - Lower layers CANNOT import from higher layers
+   - Same layer imports are allowed (features can import from features)
+   - Cross-layer imports must follow the hierarchy
+
+2. **Layer Responsibilities**
+
+   **routes/** (Pages Layer)
+   - TanStack Router file-based routes only
+   - Route configuration and page composition
+   - Minimal logic; delegate to features/entities
+   - Example: `routes/(authenticated)/contacts/index.tsx`
+
+   **features/** (Features Layer)
+   - Complete user-facing features
+   - Feature-specific UI, business logic, and API
+   - Can use multiple entities
+   - Example: `features/contacts/` (full contacts management)
+
+   **entities/** (Entities Layer)
+   - Business entities (Contact, Activity, Organization, etc.)
+   - Reusable entity logic and UI
+   - Single responsibility per entity
+   - Example: `entities/contact/` (contact data model & basic UI)
+
+   **widgets/** (Widgets Layer - Optional)
+   - Complex UI compositions
+   - Combine multiple features/entities
+   - Example: `widgets/dashboard-stats/` (combines multiple features)
+
+   **shared/** (Shared Layer)
+   - App-specific shared utilities
+   - App-specific UI components
+   - NOT cross-app shared code (use packages/ for that)
+
+   **packages/** (Infrastructure Layer)
+   - Cross-app shared code
+   - Infrastructure concerns (auth, db, ui)
+   - Business logic modules
+
+3. **Feature Structure Template**
+
+   Each feature in `features/{feature-name}/` must follow:
+
+   ```
+   features/{feature-name}/
+   ├── ui/                          # Feature UI components
+   │   └── {component-name}.tsx
+   ├── model/                       # Feature business logic
+   │   ├── hooks.ts                 # Custom React hooks
+   │   ├── queries.ts               # TanStack Query queries
+   │   ├── mutations.ts             # TanStack Query mutations
+   │   ├── types.ts                 # TypeScript types
+   │   └── utils.ts                 # Utility functions
+   └── api/                         # Server functions (TanStack Start)
+       └── functions.ts             # createServerFn exports
+   ```
+
+4. **Entity Structure Template**
+
+   Each entity in `entities/{entity-name}/` must follow:
+
+   ```
+   entities/{entity-name}/
+   ├── ui/                          # Entity UI components
+   │   └── {component-name}.tsx
+   ├── model/                       # Entity business logic
+   │   ├── types.ts                 # Entity TypeScript types
+   │   └── utils.ts                 # Entity utilities
+   └── api/                         # Entity server functions
+       └── functions.ts             # createServerFn exports
+   ```
+
+🔗 TanStack Start Integration Rules
+
+1. **Server Functions**
+   - Server functions live in `features/{feature}/api/functions.ts` or `entities/{entity}/api/functions.ts`
+   - API routes in `routes/api/{feature}/$.ts` can re-export or compose server functions
+   - Use `createServerFn` from `@tanstack/react-start`
+
+2. **Query Keys**
+   - All query keys must be defined in feature/entity `model/queries.ts`
+   - Use module-scoped query keys (e.g., `["contacts", "list"]`)
+   - Never hardcode query keys inline
+   - Shared query keys go in `packages/modules/{feature}/queries/keys.ts`
+
+3. **Route Organization**
+   - Routes follow TanStack Router file-based routing
+   - Route groups: `(auth-pages)`, `(authenticated)`, etc.
+   - Feature routes: `routes/(authenticated)/{feature}/`
+   - Route files: `route.tsx` for config, `index.tsx` for page component
+
+4. **Data Loading**
+   - Use `beforeLoad` in route files for prefetching
+   - Use TanStack Query `prefetchQuery` in loaders
+   - Delegate data fetching to feature hooks/queries
+
+📋 Naming Conventions
+
+1. **Folders**: kebab-case (`contacts-management`, `activity-tracker`)
+2. **Files**: kebab-case for components (`contact-list.tsx`), camelCase for utilities (`formatDate.ts`)
+3. **Features**: Singular noun (`contacts`, `activities`, `attendance`)
+4. **Entities**: Singular noun (`contact`, `activity`, `organization`)
+5. **Components**: PascalCase (`ContactList`, `ActivityCard`)
+6. **Hooks**: camelCase with `use` prefix (`useContacts`, `useActivityForm`)
+
+🚫 Anti-Patterns to Avoid
+
+1. ❌ **Don't** put business logic in route files
+2. ❌ **Don't** create circular dependencies between features
+3. ❌ **Don't** import from higher FSD layers
+4. ❌ **Don't** put shared cross-app code in `shared/` (use `packages/`)
+5. ❌ **Don't** mix feature logic in entity folders
+6. ❌ **Don't** create deeply nested feature folders (>3 levels)
+7. ❌ **Don't** duplicate code across features (extract to entities or packages)
+
+✅ Best Practices
+
+1. ✅ **Do** keep features self-contained and independent
+2. ✅ **Do** extract reusable logic to entities
+3. ✅ **Do** use shared packages for cross-app concerns
+4. ✅ **Do** follow the import hierarchy strictly
+5. ✅ **Do** colocate related code (UI, model, API together)
+6. ✅ **Do** use TypeScript types from entities in features
+7. ✅ **Do** keep route files thin (delegate to features)
+
+📚 Example: Contacts Feature Implementation
+
+```
+features/contacts/
+├── ui/
+│   ├── contact-list.tsx           # Uses entities/contact/ui
+│   ├── contact-form.tsx
+│   └── contact-filters.tsx
+├── model/
+│   ├── hooks.ts                   # useContacts, useContactFilters
+│   ├── queries.ts                 # contactListQuery, contactDetailQuery
+│   ├── mutations.ts               # createContactMutation, updateContactMutation
+│   └── types.ts                   # ContactFormData, ContactFilters
+└── api/
+    └── functions.ts               # $getContacts, $createContact, $updateContact
+
+entities/contact/
+├── ui/
+│   ├── contact-avatar.tsx
+│   └── contact-card.tsx
+├── model/
+│   ├── types.ts                   # Contact type from db schema
+│   └── utils.ts                   # formatContactName, validateEmail
+└── api/
+    └── functions.ts               # $getContactById (if needed)
+
+routes/(authenticated)/contacts/
+├── route.tsx                       # beforeLoad: prefetchQuery(contactListQuery())
+└── index.tsx                       # <ContactList /> from features/contacts/ui
+```
+
+This structure ensures:
+- Clear separation of concerns
+- Reusable components and logic
+- Scalable architecture
+- Easy feature discovery
+- Consistent patterns across the codebase
