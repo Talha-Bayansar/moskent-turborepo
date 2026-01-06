@@ -18,6 +18,27 @@ export const $getUser = createServerFn({ method: "GET" }).handler(async () => {
   return session.response?.user || null;
 });
 
+export const $getUserOrganizations = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const request = getRequest();
+    const headers = request.headers;
+
+    // Get session and verify user is authenticated
+    const session = await auth.api.getSession({ headers });
+
+    if (!session?.user) {
+      return [];
+    }
+
+    // List user's organizations using Better Auth Organization API
+    const organizations = await auth.api.listOrganizations({
+      headers,
+    });
+
+    return organizations || [];
+  },
+);
+
 export const $createOrganizationUser = createServerFn({ method: "POST" })
   .inputValidator(
     (data: { email: string; name: string; role: string; organizationId: string }) => data,

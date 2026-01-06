@@ -1,3 +1,16 @@
+import { config } from "dotenv";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory of the current file (ES module compatible)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env file from the auth package directory (or monorepo root)
+// Try package directory first, then fall back to monorepo root
+config({ path: resolve(__dirname, "../.env") });
+config({ path: resolve(__dirname, "../../../.env") });
+
 import { stripe } from "@better-auth/stripe";
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -14,7 +27,9 @@ import { db } from "@repo/db";
  * Required Environment Variables:
  * - SERVER_STRIPE_SECRET_KEY: Your Stripe secret key (from Stripe Dashboard)
  * - SERVER_STRIPE_WEBHOOK_SECRET: Webhook signing secret (from Stripe Dashboard webhook configuration)
- * - SERVER_STRIPE_PRICE_BASIC: Stripe price ID for the basic plan (optional, customize as needed)
+ * - SERVER_STRIPE_PRICE_STARTER: Stripe price ID for the starter plan
+ * - SERVER_STRIPE_PRICE_PROFESSIONAL: Stripe price ID for the professional plan
+ * - SERVER_STRIPE_PRICE_ENTERPRISE: Stripe price ID for the enterprise plan
  *
  * Webhook Setup:
  * - Configure webhook endpoint in Stripe Dashboard: https://your-domain.com/api/auth/stripe/webhook
@@ -25,11 +40,13 @@ import { db } from "@repo/db";
  *   - customer.subscription.deleted
  */
 
-// Initialize Stripe client
-// Note: SERVER_STRIPE_SECRET_KEY must be set in environment variables
-const stripeClient = new Stripe(process.env.SERVER_STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover", // Latest API version as of Stripe SDK v20.0.0
-});
+// Initialize Stripe client conditionally
+// Only initialize if the API key is available (allows CLI to read config without env vars)
+const stripeClient = process.env.SERVER_STRIPE_SECRET_KEY
+  ? new Stripe(process.env.SERVER_STRIPE_SECRET_KEY, {
+      apiVersion: "2025-12-15.clover", // Latest API version as of Stripe SDK v20.0.0
+    })
+  : null;
 
 const getAuthConfig = createServerOnlyFn(() =>
   betterAuth({
@@ -82,62 +99,73 @@ const getAuthConfig = createServerOnlyFn(() =>
         // We'll handle the permission check in our server function instead
         // The admin plugin provides the createUser API which handles password hashing
       }),
-      stripe({
-        stripeClient,
-        stripeWebhookSecret: process.env.SERVER_STRIPE_WEBHOOK_SECRET || "",
-        createCustomerOnSignUp: true,
-        subscription: {
-          enabled: true,
-          organization: {
-            enabled: true, // Enable organization-based subscriptions
-          },
-          plans: [
-            {
-              name: "starter",
-              priceId: process.env.SERVER_STRIPE_PRICE_STARTER!,
-              annualDiscountPriceId: process.env.SERVER_STRIPE_PRICE_STARTER_ANNUAL!, // Optional
-              limits: {
-                members: 100,
-                teams: 5,
-                membersPerTeam: 25,
-                admins: 1,
+      // Conditionally include Stripe plugin only when client is available
+      ...(stripeClient
+        ? [
+            stripe({
+              stripeClient,
+              stripeWebhookSecret: process.env.SERVER_STRIPE_WEBHOOK_SECRET || "",
+              createCustomerOnSignUp: true,
+              subscription: {
+                enabled: true,
+                organization: {
+                  enabled: true, // Enable organization-based subscriptions
+                },
+                plans: [
+                  {
+                    name: "starter",
+                    priceId: process.env.SERVER_STRIPE_PRICE_STARTER!,
+                    annualDiscountPriceId:
+                      process.env.SERVER_STRIPE_PRICE_STARTER_ANNUAL!, // Optional
+                    limits: {
+                      members: 100,
+                      teams: 5,
+                      membersPerTeam: 25,
+                      admins: 1,
+                    },
+                  },
+                  {
+                    name: "professional",
+                    priceId: process.env.SERVER_STRIPE_PRICE_PROFESSIONAL!,
+                    annualDiscountPriceId:
+                      process.env.SERVER_STRIPE_PRICE_PROFESSIONAL_ANNUAL!, // Optional
+                    limits: {
+                      members: 500,
+                      teams: 15,
+                      membersPerTeam: 50,
+                      admins: 5,
+                    },
+                  },
+                  {
+                    name: "enterprise",
+                    priceId: process.env.SERVER_STRIPE_PRICE_ENTERPRISE!,
+                    annualDiscountPriceId:
+                      process.env.SERVER_STRIPE_PRICE_ENTERPRISE_ANNUAL!, // Optional
+                    limits: {
+                      members: 1000, // Matches your membershipLimit
+                      teams: 20, // Matches your maximumTeams
+                      membersPerTeam: 50, // Matches your maximumMembersPerTeam
+                      admins: -1, // -1 for unlimited
+                    },
+                  },
+                ],
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                authorizeReference: async (
+                  { user, session, referenceId, action },
+                  ctx,
+                ) => {
+                  // Verify user has permission to manage subscriptions for the organization
+                  // This should use Better Auth's organization APIs rather than direct DB queries
+                  // The context (ctx) should provide access to Better Auth APIs
+                  // TODO: Implement proper authorization using Better Auth's organization plugin APIs
+                  // Example approach: Use ctx.auth.api.listMembers or similar to check membership role
+                  // Parameters are part of the function signature and will be used in the implementation
+                  return true;
+                },
               },
-            },
-            {
-              name: "professional",
-              priceId: process.env.SERVER_STRIPE_PRICE_PROFESSIONAL!,
-              annualDiscountPriceId: process.env.SERVER_STRIPE_PRICE_PROFESSIONAL_ANNUAL!, // Optional
-              limits: {
-                members: 500,
-                teams: 15,
-                membersPerTeam: 50,
-                admins: 5,
-              },
-            },
-            {
-              name: "enterprise",
-              priceId: process.env.SERVER_STRIPE_PRICE_ENTERPRISE!,
-              annualDiscountPriceId: process.env.SERVER_STRIPE_PRICE_ENTERPRISE_ANNUAL!, // Optional
-              limits: {
-                members: 1000, // Matches your membershipLimit
-                teams: 20, // Matches your maximumTeams
-                membersPerTeam: 50, // Matches your maximumMembersPerTeam
-                admins: -1, // -1 for unlimited
-              },
-            },
-          ],
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          authorizeReference: async ({ user, session, referenceId, action }, ctx) => {
-            // Verify user has permission to manage subscriptions for the organization
-            // This should use Better Auth's organization APIs rather than direct DB queries
-            // The context (ctx) should provide access to Better Auth APIs
-            // TODO: Implement proper authorization using Better Auth's organization plugin APIs
-            // Example approach: Use ctx.auth.api.listMembers or similar to check membership role
-            // Parameters are part of the function signature and will be used in the implementation
-            return true;
-          },
-        },
-      }),
+            }),
+          ]
+        : []),
     ],
 
     // https://www.better-auth.com/docs/concepts/session-management#session-caching

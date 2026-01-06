@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as authPagesRouteRouteImport } from './routes/(auth-pages)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as authPagesSignupRouteImport } from './routes/(auth-pages)/signup'
-import { Route as authPagesLoginRouteImport } from './routes/(auth-pages)/login'
 import { Route as authenticatedDashboardRouteRouteImport } from './routes/(authenticated)/dashboard/route'
+import { Route as authenticatedCreateOrganizationRouteRouteImport } from './routes/(authenticated)/create-organization/route'
 import { Route as authenticatedDashboardIndexRouteImport } from './routes/(authenticated)/dashboard/index'
+import { Route as authenticatedCreateOrganizationIndexRouteImport } from './routes/(authenticated)/create-organization/index'
+import { Route as authPagesSignupIndexRouteImport } from './routes/(auth-pages)/signup/index'
+import { Route as authPagesLoginIndexRouteImport } from './routes/(auth-pages)/login/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
@@ -31,20 +33,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authPagesSignupRoute = authPagesSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => authPagesRouteRoute,
-} as any)
-const authPagesLoginRoute = authPagesLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => authPagesRouteRoute,
-} as any)
 const authenticatedDashboardRouteRoute =
   authenticatedDashboardRouteRouteImport.update({
     id: '/dashboard',
     path: '/dashboard',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedCreateOrganizationRouteRoute =
+  authenticatedCreateOrganizationRouteRouteImport.update({
+    id: '/create-organization',
+    path: '/create-organization',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
 const authenticatedDashboardIndexRoute =
@@ -53,6 +51,22 @@ const authenticatedDashboardIndexRoute =
     path: '/',
     getParentRoute: () => authenticatedDashboardRouteRoute,
   } as any)
+const authenticatedCreateOrganizationIndexRoute =
+  authenticatedCreateOrganizationIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedCreateOrganizationRouteRoute,
+  } as any)
+const authPagesSignupIndexRoute = authPagesSignupIndexRouteImport.update({
+  id: '/signup/',
+  path: '/signup/',
+  getParentRoute: () => authPagesRouteRoute,
+} as any)
+const authPagesLoginIndexRoute = authPagesLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => authPagesRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -61,17 +75,20 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-organization': typeof authenticatedCreateOrganizationRouteRouteWithChildren
   '/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
-  '/login': typeof authPagesLoginRoute
-  '/signup': typeof authPagesSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/login': typeof authPagesLoginIndexRoute
+  '/signup': typeof authPagesSignupIndexRoute
+  '/create-organization/': typeof authenticatedCreateOrganizationIndexRoute
   '/dashboard/': typeof authenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof authPagesLoginRoute
-  '/signup': typeof authPagesSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/login': typeof authPagesLoginIndexRoute
+  '/signup': typeof authPagesSignupIndexRoute
+  '/create-organization': typeof authenticatedCreateOrganizationIndexRoute
   '/dashboard': typeof authenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -79,32 +96,44 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth-pages)': typeof authPagesRouteRouteWithChildren
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
+  '/(authenticated)/create-organization': typeof authenticatedCreateOrganizationRouteRouteWithChildren
   '/(authenticated)/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
-  '/(auth-pages)/login': typeof authPagesLoginRoute
-  '/(auth-pages)/signup': typeof authPagesSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(auth-pages)/login/': typeof authPagesLoginIndexRoute
+  '/(auth-pages)/signup/': typeof authPagesSignupIndexRoute
+  '/(authenticated)/create-organization/': typeof authenticatedCreateOrganizationIndexRoute
   '/(authenticated)/dashboard/': typeof authenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/create-organization'
     | '/dashboard'
+    | '/api/auth/$'
     | '/login'
     | '/signup'
-    | '/api/auth/$'
+    | '/create-organization/'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/api/auth/$' | '/dashboard'
+  to:
+    | '/'
+    | '/api/auth/$'
+    | '/login'
+    | '/signup'
+    | '/create-organization'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/(auth-pages)'
     | '/(authenticated)'
+    | '/(authenticated)/create-organization'
     | '/(authenticated)/dashboard'
-    | '/(auth-pages)/login'
-    | '/(auth-pages)/signup'
     | '/api/auth/$'
+    | '/(auth-pages)/login/'
+    | '/(auth-pages)/signup/'
+    | '/(authenticated)/create-organization/'
     | '/(authenticated)/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -138,25 +167,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth-pages)/signup': {
-      id: '/(auth-pages)/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof authPagesSignupRouteImport
-      parentRoute: typeof authPagesRouteRoute
-    }
-    '/(auth-pages)/login': {
-      id: '/(auth-pages)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authPagesLoginRouteImport
-      parentRoute: typeof authPagesRouteRoute
-    }
     '/(authenticated)/dashboard': {
       id: '/(authenticated)/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof authenticatedDashboardRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/create-organization': {
+      id: '/(authenticated)/create-organization'
+      path: '/create-organization'
+      fullPath: '/create-organization'
+      preLoaderRoute: typeof authenticatedCreateOrganizationRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
     '/(authenticated)/dashboard/': {
@@ -165,6 +187,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof authenticatedDashboardIndexRouteImport
       parentRoute: typeof authenticatedDashboardRouteRoute
+    }
+    '/(authenticated)/create-organization/': {
+      id: '/(authenticated)/create-organization/'
+      path: '/'
+      fullPath: '/create-organization/'
+      preLoaderRoute: typeof authenticatedCreateOrganizationIndexRouteImport
+      parentRoute: typeof authenticatedCreateOrganizationRouteRoute
+    }
+    '/(auth-pages)/signup/': {
+      id: '/(auth-pages)/signup/'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof authPagesSignupIndexRouteImport
+      parentRoute: typeof authPagesRouteRoute
+    }
+    '/(auth-pages)/login/': {
+      id: '/(auth-pages)/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authPagesLoginIndexRouteImport
+      parentRoute: typeof authPagesRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -177,18 +220,33 @@ declare module '@tanstack/react-router' {
 }
 
 interface authPagesRouteRouteChildren {
-  authPagesLoginRoute: typeof authPagesLoginRoute
-  authPagesSignupRoute: typeof authPagesSignupRoute
+  authPagesLoginIndexRoute: typeof authPagesLoginIndexRoute
+  authPagesSignupIndexRoute: typeof authPagesSignupIndexRoute
 }
 
 const authPagesRouteRouteChildren: authPagesRouteRouteChildren = {
-  authPagesLoginRoute: authPagesLoginRoute,
-  authPagesSignupRoute: authPagesSignupRoute,
+  authPagesLoginIndexRoute: authPagesLoginIndexRoute,
+  authPagesSignupIndexRoute: authPagesSignupIndexRoute,
 }
 
 const authPagesRouteRouteWithChildren = authPagesRouteRoute._addFileChildren(
   authPagesRouteRouteChildren,
 )
+
+interface authenticatedCreateOrganizationRouteRouteChildren {
+  authenticatedCreateOrganizationIndexRoute: typeof authenticatedCreateOrganizationIndexRoute
+}
+
+const authenticatedCreateOrganizationRouteRouteChildren: authenticatedCreateOrganizationRouteRouteChildren =
+  {
+    authenticatedCreateOrganizationIndexRoute:
+      authenticatedCreateOrganizationIndexRoute,
+  }
+
+const authenticatedCreateOrganizationRouteRouteWithChildren =
+  authenticatedCreateOrganizationRouteRoute._addFileChildren(
+    authenticatedCreateOrganizationRouteRouteChildren,
+  )
 
 interface authenticatedDashboardRouteRouteChildren {
   authenticatedDashboardIndexRoute: typeof authenticatedDashboardIndexRoute
@@ -205,10 +263,13 @@ const authenticatedDashboardRouteRouteWithChildren =
   )
 
 interface authenticatedRouteRouteChildren {
+  authenticatedCreateOrganizationRouteRoute: typeof authenticatedCreateOrganizationRouteRouteWithChildren
   authenticatedDashboardRouteRoute: typeof authenticatedDashboardRouteRouteWithChildren
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
+  authenticatedCreateOrganizationRouteRoute:
+    authenticatedCreateOrganizationRouteRouteWithChildren,
   authenticatedDashboardRouteRoute:
     authenticatedDashboardRouteRouteWithChildren,
 }

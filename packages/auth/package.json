@@ -13,6 +13,7 @@
   "dependencies": {
     "@better-auth/stripe": "catalog:",
     "better-auth": "catalog:",
+    "dotenv": "catalog:",
     "stripe": "catalog:"
   },
   "devDependencies": {

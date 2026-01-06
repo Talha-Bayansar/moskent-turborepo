@@ -25,7 +25,6 @@ This applies to all shadcn components that previously used asChild in Radix‑ba
 
 - Prefer render props over asChild or slot patterns.
 - Avoid passing JSX children when the component expects a render prop.
-- Always check the component’s local wrapper in src/core/ui/ for the correct API.
 
 3. TanStack Query Rules
 
@@ -45,3 +44,7 @@ This applies to all shadcn components that previously used asChild in Radix‑ba
 5. Directives rules
 
 - This is a tanstack start project so we don't use Next.js like directives like "use client" or "use server"
+
+6. Zod validation rules
+
+- The newest version of zod use z.email() instead of z.string().email(), so use the newer syntax as the previous one is deprecated.
