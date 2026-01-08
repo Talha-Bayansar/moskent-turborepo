@@ -9,7 +9,8 @@
     "start": "node .output/server/index.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "ui": "pnpm dlx shadcn@latest"
+    "ui": "pnpm dlx shadcn@latest",
+    "machine-translate": "inlang machine translate --project project.inlang"
   },
   "dependencies": {
     "@repo/auth": "workspace:*",
@@ -32,6 +33,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@inlang/cli": "catalog:",
+    "@inlang/paraglide-js": "catalog:",
     "@repo/eslint-config": "workspace:*",
     "@repo/tsconfig": "workspace:*",
     "@tailwindcss/vite": "catalog:",

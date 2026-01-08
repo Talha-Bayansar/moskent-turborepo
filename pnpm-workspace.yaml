@@ -8,6 +8,8 @@ catalog:
   '@better-auth/stripe': ^1.4.10
   '@eslint-react/eslint-plugin': ^2.5.0
   '@eslint/js': ^9.39.2
+  '@inlang/cli': ^3.0.12
+  '@inlang/paraglide-js': ^2.7.2
   '@tailwindcss/vite': ^4.1.18
   '@tanstack/devtools-vite': ^0.4.0
   '@tanstack/eslint-plugin-query': ^5.91.2
