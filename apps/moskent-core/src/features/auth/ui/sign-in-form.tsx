@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { m } from "~/paraglide/messages";
 import { signInSchema, type SignInInput } from "../model/validation";
 
 interface SignInFormProps {
@@ -27,7 +28,7 @@ export function SignInForm({ redirectUrl }: SignInFormProps) {
         },
         {
           onError: ({ error }) => {
-            toast.error(error.message || "An error occurred while signing in.");
+            toast.error(error.message || m.auth_error_signin());
           },
         },
       );
@@ -65,12 +66,12 @@ export function SignInForm({ redirectUrl }: SignInFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{m.auth_email_label()}</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="email"
-                  placeholder="hello@example.com"
+                  placeholder={m.auth_email_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -89,12 +90,12 @@ export function SignInForm({ redirectUrl }: SignInFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{m.auth_password_label()}</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
-                  placeholder="Enter password here"
+                  placeholder={m.auth_password_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -114,7 +115,7 @@ export function SignInForm({ redirectUrl }: SignInFormProps) {
           disabled={isPending || !form.state.canSubmit}
         >
           {isPending && <LoaderCircle className="animate-spin" />}
-          {isPending ? "Logging in..." : "Login"}
+          {isPending ? m.auth_login_loading() : m.auth_login_button()}
         </Button>
       </div>
     </form>

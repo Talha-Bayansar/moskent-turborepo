@@ -4,6 +4,7 @@ import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query
 
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { DefaultNotFound } from "~/components/default-not-found";
+import { deLocalizeUrl, localizeUrl } from "./paraglide/runtime";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
@@ -27,6 +28,10 @@ export function getRouter() {
     defaultNotFoundComponent: DefaultNotFound,
     scrollRestoration: true,
     defaultStructuralSharing: true,
+    rewrite: {
+      input: ({ url }) => deLocalizeUrl(url),
+      output: ({ url }) => localizeUrl(url),
+    },
   });
 
   setupRouterSsrQueryIntegration({

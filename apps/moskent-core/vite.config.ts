@@ -10,8 +10,39 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  build: {
+    sourcemap: false, // Disable source maps for production
+  },
+  // Suppress source map warnings in dev
+  optimizeDeps: {
+    exclude: ["@inlang/paraglide-js"],
+  },
   plugins: [
-    paraglideVitePlugin({ project: "./project.inlang", outdir: "./src/paraglide" }),
+    paraglideVitePlugin({
+      project: "./project.inlang",
+      outdir: "./src/paraglide",
+      outputStructure: "message-modules",
+      cookieName: "PARAGLIDE_LOCALE",
+      strategy: ["url", "cookie", "preferredLanguage", "baseLocale"],
+      urlPatterns: [
+        {
+          pattern: "/",
+          localized: [
+            ["en", "/en"],
+            ["tr", "/tr"],
+            ["nl", "/nl"],
+          ],
+        },
+        {
+          pattern: "/:path(.*)?",
+          localized: [
+            ["en", "/en/:path(.*)?"],
+            ["tr", "/tr/:path(.*)?"],
+            ["nl", "/nl/:path(.*)?"],
+          ],
+        },
+      ],
+    }),
     devtools(),
     tanstackStart(),
     // https://tanstack.com/start/latest/docs/framework/react/guide/hosting
@@ -30,21 +61,5 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
-    paraglideVitePlugin({
-      project: "./project.inlang",
-      outdir: "./src/paraglide",
-      outputStructure: "message-modules",
-      cookieName: "PARAGLIDE_LOCALE",
-      strategy: ["url", "cookie", "preferredLanguage", "baseLocale"],
-      urlPatterns: [
-        {
-          pattern: "/:path(.*)?",
-          localized: [
-            ["en", "/en/:path(.*)?"],
-            ["de", "/de/:path(.*)?"],
-          ],
-        },
-      ],
-    }),
   ],
 });

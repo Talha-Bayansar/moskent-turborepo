@@ -48,3 +48,39 @@ This applies to all shadcn components that previously used asChild in Radix‑ba
 6. Zod validation rules
 
 - The newest version of zod use z.email() instead of z.string().email(), so use the newer syntax as the previous one is deprecated.
+
+7. Paraglide JS Translation Key Rules
+
+- All translation keys MUST use flat keys with snake_case format (lowercase with underscores).
+- ❌ Do NOT use nested keys or dot notation
+  This is invalid:
+  ```json
+  {
+    "auth": {
+      "email": {
+        "label": "Email"
+      }
+    }
+  }
+  ```
+  Or:
+  ```json
+  {
+    "auth.email.label": "Email"
+  }
+  ```
+
+✅ Instead, use flat snake_case keys
+Correct usage:
+```json
+{
+  "auth_email_label": "Email",
+  "auth_password_label": "Password",
+  "pages_dashboard_title": "Dashboard"
+}
+```
+
+- Import messages using: `import { m } from "~/paraglide/messages"`
+- Access messages using: `m.auth_email_label()` (not `m["auth.email.label"]()`)
+- Keep keys descriptive but concise, using snake_case throughout
+- Group related keys by prefix (e.g., `auth_*`, `pages_*`, `app_*`) but keep them flat

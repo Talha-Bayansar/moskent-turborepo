@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { m } from "~/paraglide/messages";
 import { signUpSchema, type SignUpInput } from "../model/validation";
 
 interface SignUpFormProps {
@@ -27,7 +28,7 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
         },
         {
           onError: ({ error }) => {
-            toast.error(error.message || "An error occurred while signing up.");
+            toast.error(error.message || m.auth_error_signup());
           },
         },
       );
@@ -69,12 +70,12 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{m.auth_name_label()}</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="text"
-                  placeholder="John Doe"
+                  placeholder={m.auth_name_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -93,12 +94,12 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{m.auth_email_label()}</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="email"
-                  placeholder="hello@example.com"
+                  placeholder={m.auth_email_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -117,12 +118,12 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{m.auth_password_label()}</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
-                  placeholder="Password"
+                  placeholder={m.auth_password_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -141,12 +142,14 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  {m.auth_password_confirm_label()}
+                </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
-                  placeholder="Confirm Password"
+                  placeholder={m.auth_password_confirm_placeholder()}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -166,7 +169,7 @@ export function SignUpForm({ redirectUrl }: SignUpFormProps) {
           disabled={isPending || !form.state.canSubmit}
         >
           {isPending && <LoaderCircle className="animate-spin" />}
-          {isPending ? "Signing up..." : "Sign up"}
+          {isPending ? m.auth_signup_loading() : m.auth_signup_button()}
         </Button>
       </div>
     </form>

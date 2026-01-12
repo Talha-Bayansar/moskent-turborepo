@@ -14,6 +14,8 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import { authQueryOptions, type AuthQueryResult } from "@repo/auth/tanstack/queries";
+import { m } from "~/paraglide/messages";
+import { getLocale } from "~/paraglide/runtime";
 import appCss from "~/styles.css?url";
 
 import { Toaster } from "@repo/ui/components/sonner";
@@ -42,11 +44,11 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Moskent Core",
+        title: m.app_title(),
       },
       {
         name: "description",
-        content: "A monorepo template for 🏝️ TanStack Start with Turborepo.",
+        content: m.app_description(),
       },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
@@ -65,7 +67,7 @@ function RootComponent() {
 function RootDocument({ children }: { readonly children: React.ReactNode }) {
   return (
     // suppress since we're updating the "dark" class in a custom script below
-    <html lang="en" suppressHydrationWarning>
+    <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
