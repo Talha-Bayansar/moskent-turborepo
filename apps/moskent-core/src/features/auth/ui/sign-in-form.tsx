@@ -3,10 +3,10 @@ import { authQueryOptions } from "@repo/auth/tanstack/queries";
 import { Button } from "@repo/ui/components/button";
 import { Field, FieldError, FieldLabel } from "@repo/ui/components/field";
 import { Input } from "@repo/ui/components/input";
+import { Spinner } from "@repo/ui/components/spinner";
 import { useForm } from "@tanstack/react-form-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { m } from "~/paraglide/messages";
 import { signInSchema, type SignInInput } from "../model/validation";
@@ -114,8 +114,10 @@ export function SignInForm({ redirectUrl }: SignInFormProps) {
           size="lg"
           disabled={isPending || !form.state.canSubmit}
         >
-          {isPending && <LoaderCircle className="animate-spin" />}
-          {isPending ? m.auth_login_loading() : m.auth_login_button()}
+          <span className="flex items-center gap-2">
+            {isPending && <Spinner />}
+            {isPending ? m.auth_login_loading() : m.auth_login_button()}
+          </span>
         </Button>
       </div>
     </form>

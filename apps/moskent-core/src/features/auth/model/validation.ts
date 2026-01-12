@@ -1,19 +1,20 @@
 import { z } from "zod";
+import { m } from "~/paraglide/messages";
 
 export const signInSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.email(m.auth_validation_email_invalid()),
+  password: z.string().min(6, m.auth_validation_password_min_length()),
 });
 
 export const signUpSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+    name: z.string().min(1, m.auth_validation_name_required()),
+    email: z.email(m.auth_validation_email_invalid()),
+    password: z.string().min(6, m.auth_validation_password_min_length()),
+    confirmPassword: z.string().min(6, m.auth_validation_password_min_length()),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
+    message: m.auth_validation_passwords_must_match(),
     path: ["confirmPassword"],
   });
 
