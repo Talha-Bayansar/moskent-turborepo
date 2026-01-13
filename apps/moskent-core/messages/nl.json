@@ -86,5 +86,13 @@
   "org_setup_validation_slug_invalid_format": "Slug mag alleen kleine letters, cijfers en streepjes bevatten",
   "org_setup_validation_slug_taken": "Deze slug is al in gebruik",
   "org_setup_error_create_failed": "Organisatie aanmaken mislukt. Probeer het opnieuw.",
-  "org_setup_error_slug_check_failed": "Slug beschikbaarheid controleren mislukt. Probeer het opnieuw."
+  "org_setup_error_slug_check_failed": "Slug beschikbaarheid controleren mislukt. Probeer het opnieuw.",
+  "sidebar_organizations_label": "Organisaties",
+  "sidebar_no_organization": "Geen Organisatie",
+  "sidebar_sign_out": "Uitloggen",
+  "sidebar_sign_out_dialog_title": "Uitloggen",
+  "sidebar_sign_out_dialog_description": "Weet u zeker dat u wilt uitloggen? U moet opnieuw inloggen om toegang te krijgen tot uw account.",
+  "sidebar_sign_out_dialog_cancel": "Annuleren",
+  "sidebar_sign_out_dialog_confirm": "Uitloggen",
+  "sidebar_dashboard": "Dashboard"
 }

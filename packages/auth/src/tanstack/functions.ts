@@ -18,6 +18,21 @@ export const $getUser = createServerFn({ method: "GET" }).handler(async () => {
   return session.response?.user || null;
 });
 
+export const $getSession = createServerFn({ method: "GET" }).handler(async () => {
+  const session = await auth.api.getSession({
+    headers: getRequest().headers,
+    returnHeaders: true,
+  });
+
+  // Forward any Set-Cookie headers to the client, e.g. for session/cache refresh
+  const cookies = session.headers?.getSetCookie();
+  if (cookies?.length) {
+    setResponseHeader("Set-Cookie", cookies);
+  }
+
+  return session.response?.session || null;
+});
+
 export const $getUserOrganizations = createServerFn({ method: "GET" }).handler(
   async () => {
     const request = getRequest();

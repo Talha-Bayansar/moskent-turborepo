@@ -86,5 +86,13 @@
   "org_setup_validation_slug_invalid_format": "Slug can only contain lowercase letters, numbers, and hyphens",
   "org_setup_validation_slug_taken": "This slug is already taken",
   "org_setup_error_create_failed": "Failed to create organization. Please try again.",
-  "org_setup_error_slug_check_failed": "Failed to check slug availability. Please try again."
+  "org_setup_error_slug_check_failed": "Failed to check slug availability. Please try again.",
+  "sidebar_organizations_label": "Organizations",
+  "sidebar_no_organization": "No Organization",
+  "sidebar_sign_out": "Sign out",
+  "sidebar_sign_out_dialog_title": "Sign out",
+  "sidebar_sign_out_dialog_description": "Are you sure you want to sign out? You will need to sign in again to access your account.",
+  "sidebar_sign_out_dialog_cancel": "Cancel",
+  "sidebar_sign_out_dialog_confirm": "Sign out",
+  "sidebar_dashboard": "Dashboard"
 }

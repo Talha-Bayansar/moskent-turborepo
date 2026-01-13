@@ -86,5 +86,13 @@
   "org_setup_validation_slug_invalid_format": "Slug yalnızca küçük harfler, sayılar ve tire içerebilir",
   "org_setup_validation_slug_taken": "Bu slug zaten alınmış",
   "org_setup_error_create_failed": "Organizasyon oluşturulamadı. Lütfen tekrar deneyin.",
-  "org_setup_error_slug_check_failed": "Slug kullanılabilirliği kontrol edilemedi. Lütfen tekrar deneyin."
+  "org_setup_error_slug_check_failed": "Slug kullanılabilirliği kontrol edilemedi. Lütfen tekrar deneyin.",
+  "sidebar_organizations_label": "Organizasyonlar",
+  "sidebar_no_organization": "Organizasyon Yok",
+  "sidebar_sign_out": "Çıkış Yap",
+  "sidebar_sign_out_dialog_title": "Çıkış Yap",
+  "sidebar_sign_out_dialog_description": "Çıkış yapmak istediğinizden emin misiniz? Hesabınıza tekrar erişmek için giriş yapmanız gerekecek.",
+  "sidebar_sign_out_dialog_cancel": "İptal",
+  "sidebar_sign_out_dialog_confirm": "Çıkış Yap",
+  "sidebar_dashboard": "Kontrol Paneli"
 }

@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { $getUser, $getUserOrganizations } from "./functions";
+import { $getSession, $getUser, $getUserOrganizations } from "./functions";
 
 export const authQueryOptions = () =>
   queryOptions({
@@ -18,3 +18,11 @@ export const userOrganizationsQueryOptions = () =>
 export type UserOrganizationsQueryResult = Awaited<
   ReturnType<typeof $getUserOrganizations>
 >;
+
+export const sessionQueryOptions = () =>
+  queryOptions({
+    queryKey: ["session"],
+    queryFn: ({ signal }) => $getSession({ signal }),
+  });
+
+export type SessionQueryResult = Awaited<ReturnType<typeof $getSession>>;
