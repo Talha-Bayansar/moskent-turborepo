@@ -43,10 +43,10 @@ function HomePage() {
   ];
 
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex min-h-svh flex-col items-center">
       {/* Header/Navigation */}
       <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-        <div className="container flex h-16 items-center justify-between px-4">
+        <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Link to="/" className="text-xl font-bold">
               {m.app_title()}
@@ -68,7 +68,7 @@ function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container flex flex-col items-center gap-8 px-4 py-24 text-center md:py-32">
+      <section className="flex flex-col items-center gap-8 px-4 py-24 text-center md:py-32">
         <div className="flex max-w-3xl flex-col gap-6">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             {m.landing_hero_title()}
@@ -99,7 +99,7 @@ function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="container px-4 py-16 md:py-24">
+      <section className="px-4 py-16 md:py-24">
         <div className="mb-12 flex flex-col items-center gap-4 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             {m.landing_features_title()}
@@ -125,7 +125,7 @@ function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="container px-4 py-16 md:py-24">
+      <section className="w-full px-4 py-16 md:py-24">
         <Card className="border-2">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl sm:text-3xl md:text-4xl">
@@ -144,8 +144,8 @@ function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-muted/50 border-t py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 px-4 sm:flex-row">
+      <footer className="bg-muted/50 w-full border-t py-8">
+        <div className="flex flex-col items-center justify-between gap-4 px-4 sm:flex-row">
           <div className="flex flex-col items-center gap-2 sm:items-start">
             <p className="font-semibold">{m.app_title()}</p>
             <p className="text-muted-foreground text-sm">{m.app_description()}</p>

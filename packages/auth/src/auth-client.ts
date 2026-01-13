@@ -5,7 +5,11 @@ import { createAuthClient } from "better-auth/react";
 const authClient = createAuthClient({
   baseURL: process.env.VITE_BASE_URL,
   plugins: [
-    organizationClient(),
+    organizationClient({
+      teams: {
+        enabled: true,
+      },
+    }),
     adminClient(),
     stripeClient({
       subscription: true, // Enable subscription management
