@@ -1,3 +1,7 @@
+import type {
+  ActiveMemberQueryResult,
+  UserOrganizationsQueryResult,
+} from "@repo/auth/tanstack/queries";
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
@@ -19,7 +23,14 @@ export function getRouter() {
 
   const router = createRouter({
     routeTree,
-    context: { queryClient, user: null },
+    context: {
+      queryClient,
+      user: null,
+      activeOrganization: null as NonNullable<
+        UserOrganizationsQueryResult[number]
+      > | null,
+      activeMember: null as ActiveMemberQueryResult | null,
+    },
     defaultPreload: "intent",
     // react-query will handle data fetching & caching
     // https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#passing-all-loader-events-to-an-external-cache

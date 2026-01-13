@@ -1,5 +1,8 @@
+import { $setActiveOrganization } from "@repo/auth/tanstack/functions";
 import {
+  activeMemberQueryOptions,
   authQueryOptions,
+  sessionQueryOptions,
   userOrganizationsQueryOptions,
 } from "@repo/auth/tanstack/queries";
 import { Separator } from "@repo/ui/components/separator";
@@ -47,8 +50,60 @@ export const Route = createFileRoute("/(authenticated)")({
       throw redirect({ to: "/dashboard" });
     }
 
-    // re-return to update type as non-null for child routes
-    return { user, organizations };
+    // Get session to check for active organization
+    const session = await context.queryClient.ensureQueryData({
+      ...sessionQueryOptions(),
+      revalidateIfStale: true,
+    });
+
+    let activeOrganizationId = session?.activeOrganizationId;
+    let activeOrganization = organizations?.find(
+      (org) => org.id === activeOrganizationId,
+    );
+
+    // If user has organizations but no active organization, set the first one as active
+    if (
+      organizations &&
+      organizations.length > 0 &&
+      !activeOrganizationId &&
+      !activeOrganization
+    ) {
+      const firstOrganization = organizations[0];
+      try {
+        await $setActiveOrganization({ data: { organizationId: firstOrganization.id } });
+        // Invalidate session query to get updated session with active organization
+        await context.queryClient.invalidateQueries({
+          queryKey: ["session"],
+        });
+        // Refetch session to get updated activeOrganizationId
+        const updatedSession = await context.queryClient.ensureQueryData({
+          ...sessionQueryOptions(),
+          revalidateIfStale: true,
+        });
+        activeOrganizationId = updatedSession?.activeOrganizationId;
+        activeOrganization = firstOrganization;
+      } catch (error) {
+        console.error("Failed to set active organization:", error);
+        // Continue with null active organization if setting fails
+      }
+    }
+
+    // Fetch active member (includes role) if there's an active organization
+    let activeMember = null;
+    if (activeOrganizationId) {
+      activeMember = await context.queryClient.ensureQueryData({
+        ...activeMemberQueryOptions(),
+        revalidateIfStale: true,
+      });
+    }
+
+    // Return all data in route context for child routes
+    return {
+      user,
+      organizations,
+      activeOrganization,
+      activeMember,
+    };
   },
 });
 
@@ -60,10 +115,7 @@ function AuthenticatedLayout() {
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            <Separator orientation="vertical" className="mr-2" />
           </div>
         </header>
         <div className="flex flex-1 flex-col">

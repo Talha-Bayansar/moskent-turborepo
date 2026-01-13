@@ -13,7 +13,12 @@ import { formDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
-import { authQueryOptions, type AuthQueryResult } from "@repo/auth/tanstack/queries";
+import {
+  authQueryOptions,
+  type ActiveMemberQueryResult,
+  type AuthQueryResult,
+  type UserOrganizationsQueryResult,
+} from "@repo/auth/tanstack/queries";
 import { m } from "~/paraglide/messages";
 import { getLocale } from "~/paraglide/runtime";
 import appCss from "~/styles.css?url";
@@ -24,6 +29,8 @@ import { ThemeProvider } from "@repo/ui/lib/theme-provider";
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   user: AuthQueryResult;
+  activeOrganization: NonNullable<UserOrganizationsQueryResult[number]> | null;
+  activeMember: ActiveMemberQueryResult | null;
 }>()({
   beforeLoad: ({ context }) => {
     // we're using react-query for client-side caching to reduce client-to-server calls, see /src/router.tsx

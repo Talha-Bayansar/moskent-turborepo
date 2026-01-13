@@ -1,5 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
-import { $getSession, $getUser, $getUserOrganizations } from "./functions";
+import {
+  $getActiveMember,
+  $getSession,
+  $getUser,
+  $getUserOrganizations,
+} from "./functions";
 
 export const authQueryOptions = () =>
   queryOptions({
@@ -26,3 +31,11 @@ export const sessionQueryOptions = () =>
   });
 
 export type SessionQueryResult = Awaited<ReturnType<typeof $getSession>>;
+
+export const activeMemberQueryOptions = () =>
+  queryOptions({
+    queryKey: ["user", "activeMember"],
+    queryFn: ({ signal }) => $getActiveMember({ signal }),
+  });
+
+export type ActiveMemberQueryResult = Awaited<ReturnType<typeof $getActiveMember>>;

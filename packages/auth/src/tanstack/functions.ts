@@ -54,6 +54,56 @@ export const $getUserOrganizations = createServerFn({ method: "GET" }).handler(
   },
 );
 
+export const $getActiveMember = createServerFn({ method: "GET" }).handler(async () => {
+  const request = getRequest();
+  const headers = request.headers;
+
+  // Get session and verify user is authenticated
+  const session = await auth.api.getSession({ headers });
+
+  if (!session?.user) {
+    return null;
+  }
+
+  // Get active member using Better Auth Organization API
+  // This returns the user's member details including their role in the active organization
+  try {
+    const activeMember = await auth.api.getActiveMember({
+      headers,
+    });
+
+    return activeMember || null;
+  } catch (error) {
+    // If there's no active organization, this will throw an error
+    // Return null in that case
+    return null;
+  }
+});
+
+export const $setActiveOrganization = createServerFn({ method: "POST" })
+  .inputValidator((data: { organizationId: string }) => data)
+  .handler(async ({ data }) => {
+    const request = getRequest();
+    const headers = request.headers;
+
+    // Get session and verify user is authenticated
+    const session = await auth.api.getSession({ headers });
+
+    if (!session?.user) {
+      throw new Error("Unauthorized");
+    }
+
+    // Set active organization using Better Auth Organization API
+    await auth.api.setActiveOrganization({
+      body: {
+        organizationId: data.organizationId,
+      },
+      headers,
+    });
+
+    return { success: true };
+  });
+
 export const $createOrganizationUser = createServerFn({ method: "POST" })
   .inputValidator(
     (data: { email: string; name: string; role: string; organizationId: string }) => data,

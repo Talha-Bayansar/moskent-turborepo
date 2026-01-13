@@ -17,15 +17,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@repo/ui/components/sidebar";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Building2, ChevronsUpDown } from "lucide-react";
 import { m } from "~/paraglide/messages";
 
 export function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
   const { data: session } = useQuery(sessionQueryOptions());
   const { data: organizations } = useQuery(userOrganizationsQueryOptions());
@@ -37,17 +34,14 @@ export function OrganizationSwitcher() {
 
   const handleOrganizationSwitch = async (organizationId: string) => {
     try {
+      // Set the active organization via Better Auth
       await authClient.organization.setActive({
         organizationId,
       });
 
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      queryClient.invalidateQueries({ queryKey: ["user", "organizations"] });
-      queryClient.invalidateQueries({ queryKey: ["session"] });
-
-      // Reload the router to refresh the page context
-      await router.invalidate();
+      // Full page reload to ensure authenticated route's beforeLoad runs
+      // This guarantees the context is updated with the correct organization and role
+      window.location.reload();
     } catch (error) {
       console.error("Failed to switch organization:", error);
     }
